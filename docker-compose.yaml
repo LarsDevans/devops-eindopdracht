@@ -1,0 +1,11 @@
+name: devops-eindproject
+services:
+  message-queue:
+    image: larsdevans/devops.message-queue
+  
+  pet-service:
+    image: larsdevans/devops.pet-service
+    ports:
+      - "3001:3000"
+    depends_on:
+      - message-queue

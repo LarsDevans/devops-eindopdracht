@@ -9,6 +9,7 @@ app.use(express.json());
 const queue = [];
 const routingTable = {
   'test_event': 'https://localhost:3000/blank_endpoint',
+  'pet_add_event': 'https://pet-service:3000'
 };
 
 app.get('/', (req, res) => {
@@ -38,6 +39,8 @@ const processQueue = async () => {
   if (!event || !data) {
     return;
   }
+
+  console.log({ 'event': event, 'data': data });
 
   const endpoint = routingTable[event];
   await axios.post(endpoint, data)
