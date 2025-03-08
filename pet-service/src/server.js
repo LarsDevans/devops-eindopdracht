@@ -1,43 +1,41 @@
-import express from 'express';
 import axios from 'axios';
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
 const port = 3000;
 const app = express();
 app.use(express.json());
 
-const messageQueueServerURL = 'http://message-queue:3000/queue';
-
+const endpoint = 'http://message-queue:3000/push';
 const events = {
-  pet_added: 'pet_add_event'
+  newPet: 'new_pet'
 };
+
 const pets = [];
 
 app.get('/pets', (req, res) => {
-  res.json(pets);
+  res.status(200).json(pets);
 });
 
 app.post('/pets', async (req, res) => {
-  const { pet } = req.body;
-  if (!pet) {
-    return res.status(400).json({ 'message': 'Pet is required' });
+  const { kind, name, photo } = req.body;
+  if (!kind || !name || !photo) {
+    return res.status(404).json({ 'error': 'Kind, name, and photo are required' });
   }
 
-  const { name, age, breed } = pet;
-  if (!name || !age || !breed) {
-    return res.status(400).json({ 'message': 'Name, age, and breed are required' });
-  }
+  const pet = { 'id': uuidv4(), kind, name, photo };
+  pets.push(pet);
 
-  await axios.post(messageQueueServerURL, {
-    event: events.pet_added,
-    data: { name, age, breed }
+  await axios.post(endpoint, {
+    event: events.newPet,
+    data: pet
   });
 
-  pets.push({ name, age, breed });
-  res.json({ 'message': 'Pet added to database' });
+  res.status(200).json({ 'success': 'Pet added to database', 'details': pet });
 });
 
 app.listen(port, () => {
   console.log(`Pet Service running on http://localhost:${port}`);
 });
 
-export default pets;
+export { pets };
