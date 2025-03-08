@@ -14,6 +14,13 @@ services:
     networks:
       - shared
 
+  mail-service:
+    image: larsdevans/devops.mail-service
+    ports:
+      - "3002:3000"
+    networks:
+      - shared
+
 networks:
   shared:
     driver: bridge

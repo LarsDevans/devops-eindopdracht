@@ -7,7 +7,7 @@ app.use(express.json());
 
 const queue = [];
 const routingTable = {
-  'new_pet': { 'method': 'post', 'endpoint': 'http://localhost:3000/blank' }
+  'new_pet': { 'method': 'post', 'endpoint': 'http://mail-service:3000/batch' }
 };
 
 app.post('/push', (req, res) => {
@@ -23,6 +23,7 @@ app.post('/push', (req, res) => {
   const message = { event, data };
   queue.push(message);
 
+  console.log({ 'success': 'Message added to queue', 'details': message });
   res.status(200).json({ 'success': 'Message added to queue', 'details': message });
 });
 
@@ -39,7 +40,27 @@ const processQueue = async () => {
     url: endpoint,
     data: method === 'get' ? undefined : data
   })
+    .then(() => {
+      console.log({
+        'success': 'Routed message to service',
+        'details': {
+          'event': event,
+          'data': data,
+          'method': method,
+          'endpoint': endpoint
+        }
+      });
+    })
     .catch(() => {
+      console.log({
+        'failed': 'Could not route message to service',
+        'details': {
+          'event': event,
+          'data': data,
+          'method': method,
+          'endpoint': endpoint
+        }
+      });
       queue.push({ event, data });
     });
 };

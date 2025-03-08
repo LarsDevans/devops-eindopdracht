@@ -31,6 +31,7 @@ app.post('/pets', async (req, res) => {
     data: pet
   });
 
+  console.log({ 'success': 'Pet added to database', 'details': pet });
   res.status(200).json({ 'success': 'Pet added to database', 'details': pet });
 });
 
