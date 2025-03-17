@@ -27,21 +27,21 @@ jobs:
 
   mail-service:
     needs: detect-changes
-    if: needs.detect-changes.outputs.mail-service-changes == 'true'
+    if: ${{ needs.detect-changes.outputs.mail-service-changes == 'true' }}
     uses: ./.github/workflows/build-and-test.yml
     with:
       service: "mail-service"
 
   message-queue:
     needs: detect-changes
-    if: needs.detect-changes.outputs.message-queue-changes == 'true'
+    if: ${{ needs.detect-changes.outputs.message-queue-changes == 'true' }}
     uses: ./.github/workflows/build-and-test.yml
     with:
       service: "message-queue"
 
   pet-service:
     needs: detect-changes
-    if: needs.detect-changes.outputs.pet-service-changes == 'true'
+    if: ${{ needs.detect-changes.outputs.pet-service-changes == 'true' }}
     uses: ./.github/workflows/build-and-test.yml
     with:
       service: "pet-service"
