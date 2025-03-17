@@ -1,10 +1,20 @@
 import axios from 'axios';
 import express from 'express';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const port = 3000;
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.set('view engine', 'ejs');
+app.set('views', __dirname);
 
 const endpoint = 'http://message-queue:3000/push';
 const events = {
@@ -14,7 +24,7 @@ const events = {
 const pets = [];
 
 app.get('/pets', (req, res) => {
-  res.status(200).json(pets);
+  res.render('pets', { pets: pets });
 });
 
 app.post('/pets', async (req, res) => {
@@ -32,7 +42,7 @@ app.post('/pets', async (req, res) => {
   });
 
   console.log({ 'success': 'Pet added to database', 'details': pet });
-  res.status(200).json({ 'success': 'Pet added to database', 'details': pet });
+  res.redirect('/pets');
 });
 
 app.listen(port, () => {
