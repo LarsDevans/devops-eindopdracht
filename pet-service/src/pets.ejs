@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    >
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    >
+    <title>Pet Service</title>
+  </head>
+
+  <body>
+    <main class="container">
+      <h1>Our pets</h1>
+
+      <section>
+        <table>
+          <thead>
+            <tr>
+              <th>Kind</th>
+              <th>Name</th>
+              <th>Photo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% pets.forEach(function(pet) { %>
+              <tr>
+                <td><%= pet.kind %></td>
+                <td><%= pet.name %></td>
+                <td>
+                  <img
+                    src="<%= pet.photo %>"
+                    alt="Photo of dog"
+                    style="max-height: 100px; height: 100px; width: auto;"
+                  >
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <form
+          accept="/pets"
+          method="post"
+        >
+          <fieldset>
+            <label>
+              Kind
+              <input
+                id="kind"
+                name="kind"
+                placeholder="Dog, Cocker Spaniel"
+              />
+            </label>
+            <label>
+              Name
+              <input
+                id="name"
+                name="name"
+                placeholder="Joep"
+              />
+            </label>
+            <label>
+              Image URL
+              <input
+                id="photo"
+                name="photo"
+                placeholder="https://www.example.com/some_image.jpg"
+              />
+            </label>
+          </fieldset>
+
+          <input
+            type="submit"
+            value="Add pet"
+          />
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
