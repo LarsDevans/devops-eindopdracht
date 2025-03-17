@@ -1,0 +1,47 @@
+name: Build and Test Microservice
+
+on:
+  pull_request:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      mail-service-changes: ${{ steps.filter.outputs.mail-service_changes }}
+      message-queue-changes: ${{ steps.filter.outputs.message-queue_changes }}
+      pet-service-changes: ${{ steps.filter.outputs.pet-service_changes }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Detect changed files
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            mail-service:
+              - 'mail-service/**'
+            message-queue:
+              - 'message-queue/**'
+            pet-service:
+              - 'pet-service/**'
+
+  mail-service:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.mail-service-changes == 'true'
+    uses: ./.github/workflows/build-and-test.yml
+    with:
+      service: "mail-service"
+
+  message-queue:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.message-queue-changes == 'true'
+    uses: ./.github/workflows/build-and-test.yml
+    with:
+      service: "message-queue"
+
+  pet-service:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.pet-service-changes == 'true'
+    uses: ./.github/workflows/build-and-test.yml
+    with:
+      service: "pet-service"
