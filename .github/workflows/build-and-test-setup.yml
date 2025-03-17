@@ -7,9 +7,9 @@ jobs:
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
-      mail-service-changes: ${{ steps.filter.outputs.mail-service_changes }}
-      message-queue-changes: ${{ steps.filter.outputs.message-queue_changes }}
-      pet-service-changes: ${{ steps.filter.outputs.pet-service_changes }}
+      mail-service: ${{ steps.filter.outputs.mail-service }}
+      message-queue: ${{ steps.filter.outputs.message-queue }}
+      pet-service: ${{ steps.filter.outputs.pet-service }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,21 +27,21 @@ jobs:
 
   mail-service:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.mail-service-changes == 'true' }}
+    if: ${{ needs.detect-changes.outputs.mail-service == 'true' }}
     uses: ./.github/workflows/build-and-test.yml
     with:
       service: "mail-service"
 
   message-queue:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.message-queue-changes == 'true' }}
+    if: ${{ needs.detect-changes.outputs.message-queue == 'true' }}
     uses: ./.github/workflows/build-and-test.yml
     with:
       service: "message-queue"
 
   pet-service:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.pet-service-changes == 'true' }}
+    if: ${{ needs.detect-changes.outputs.pet-service == 'true' }}
     uses: ./.github/workflows/build-and-test.yml
     with:
       service: "pet-service"
